@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive CNN Pipeline for Medical Readmission Prediction</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/lib/index.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .step-content {
+            display: none;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .step-content.active {
+            display: block;
+            opacity: 1;
+        }
+        .step-button {
+            transition: all 0.3s ease;
+        }
+        .step-button.active {
+            background-color: #4f46e5;
+            color: white;
+            font-weight: 600;
+        }
+        .step-button:not(.active):hover {
+            background-color: #e0e7ff;
+        }
+        .info-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            padding: 1.5rem;
+        }
+        .cnn-layer {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .cnn-layer:hover, .cnn-layer.highlight {
+            transform: scale(1.05);
+            filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+        }
+        .connector {
+            stroke: #9ca3af;
+            stroke-width: 2;
+            marker-end: url(#arrowhead);
+        }
+        .k-fold-box {
+            border: 2px solid #d1d5db;
+            transition: all 0.3s ease-in-out;
+        }
+        .k-fold-box.train {
+            background-color: #dbeafe;
+            border-color: #93c5fd;
+        }
+        .k-fold-box.validate {
+            background-color: #fef9c3;
+            border-color: #fde047;
+        }
+    </style>
+</head>
+<body class="antialiased text-gray-800">
+
+    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+        <header class="text-center mb-10">
+            <h1 class="text-3xl font-bold text-gray-900 sm:text-4xl">From Data to Prediction: An Interactive Journey</h1>
+            <p class="mt-4 text-lg text-gray-600">Visualizing the pipeline for predicting medical readmission.</p>
+        </header>
+
+        <!-- Step Navigation -->
+        <div class="flex flex-wrap justify-center gap-2 sm:gap-4 mb-10">
+            <button id="btn-step-1" class="step-button active px-4 py-2 rounded-full text-sm font-medium" onclick="showStep(1)">1. Feature Selection</button>
+            <button id="btn-step-2" class="step-button px-4 py-2 rounded-full text-sm font-medium" onclick="showStep(2)">2. Hyperparameter Search</button>
+            <button id="btn-step-3" class="step-button px-4 py-2 rounded-full text-sm font-medium" onclick="showStep(3)">3. Final Architecture</button>
+            <button id="btn-step-4" class="step-button px-4 py-2 rounded-full text-sm font-medium" onclick="showStep(4)">4. Final Evaluation</button>
+        </div>
+
+        <!-- Content Area -->
+        <main>
+            <!-- Step 1: Genetic Algorithm -->
+            <div id="step-1" class="step-content active">
+                <div class="info-card">
+                    <h2 class="text-2xl font-bold mb-4 text-indigo-600">Step 1: Genetic Algorithm for Feature Selection</h2>
+                    <p class="mb-6 text-gray-700">The first crucial step is to select the most impactful features from the dataset. Starting with a wide pool of 183 possibilities, a Genetic Algorithm (GA) intelligently narrows them down, much like natural selection. This process improves model performance and reduces complexity.</p>
+                    
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <div class="flex flex-col md:flex-row items-center justify-around gap-8">
+                            <!-- Initial Features -->
+                            <div class="text-center">
+                                <div class="relative w-32 h-32">
+                                    <svg class="w-full h-full" viewBox="0 0 100 100">
+                                        <circle cx="50" cy="50" r="45" fill="#eef2ff"/>
+                                        <text x="50" y="50" text-anchor="middle" dy=".3em" font-size="20" font-weight="bold" fill="#4338ca">183</text>
+                                        <text x="50" y="68" text-anchor="middle" font-size="8" fill="#64748b">Initial Features</text>
+                                    </svg>
+                                </div>
+                                <p class="mt-2 font-semibold text-gray-800">Starting Pool</p>
+                            </div>
+
+                            <!-- GA Process -->
+                            <div class="text-center">
+                                <svg class="w-24 h-24 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                <p class="mt-2 font-semibold text-gray-800">"Survival of the Fittest"</p>
+                                <p class="text-sm text-gray-600">20 Generations</p>
+                            </div>
+
+                            <!-- Selected Features -->
+                            <div class="text-center">
+                                <div class="relative w-32 h-32">
+                                    <svg class="w-full h-full" viewBox="0 0 100 100">
+                                        <circle cx="50" cy="50" r="45" fill="#dcfce7"/>
+                                        <text x="50" y="50" text-anchor="middle" dy=".3em" font-size="20" font-weight="bold" fill="#166534">88</text>
+                                        <text x="50" y="68" text-anchor="middle" font-size="8" fill="#16a34a">Selected Features</text>
+                                    </svg>
+                                </div>
+                                <p class="mt-2 font-semibold text-gray-800">Optimal Subset</p>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <h3 class="font-semibold text-lg mb-2">How it Works:</h3>
+                            <ul class="list-disc list-inside space-y-1 text-gray-600">
+                                <li><strong>Population:</strong> The GA starts with a random collection of feature subsets (individuals).</li>
+                                <li><strong>Evaluation:</strong> Each subset is used to train a simple model, and its accuracy serves as its "fitness" score.</li>
+                                <li><strong>Selection, Crossover & Mutation:</strong> The best-performing subsets are selected. Their features are mixed (crossover) and randomly tweaked (mutation) to create a new generation of subsets.</li>
+                                <li><strong>Repeat:</strong> This cycle repeats for 20 generations, evolving towards the feature subset that yields the highest accuracy.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Hyperparameter Tuning & K-Fold Validation -->
+            <div id="step-2" class="step-content">
+                <div class="info-card">
+                    <h2 class="text-2xl font-bold mb-4 text-indigo-600">Step 2: Hyperparameter Search with Optuna & K-Fold</h2>
+                    <p class="mb-6 text-gray-700">This is the most critical phase. We use <strong>Optuna</strong> to intelligently search for the best hyperparameters (like learning rate, filter count, etc.). To ensure the results are reliable, every set of hyperparameters tested by Optuna is evaluated using <strong>5-Fold Cross-Validation</strong>. This prevents us from choosing parameters that just got lucky on a single data split.</p>
+                    
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <h3 class="font-semibold text-lg mb-2 text-center">The Tuning & Validation Loop</h3>
+                        <p class="text-center text-gray-600 mb-6">For each trial, Optuna picks a set of hyperparameters and uses K-Fold to get a robust accuracy score.</p>
+                        
+                        <div id="kfold-animation" class="mb-6">
+                            <div class="flex justify-between mb-2">
+                                <span id="kfold-iteration" class="font-semibold text-lg">Iteration 1 of 5</span>
+                            </div>
+                            <div id="kfold-container" class="grid grid-cols-5 gap-2">
+                                <div class="k-fold-box validate p-4 text-center rounded-lg"><strong>Fold 1</strong><br>(Validate)</div>
+                                <div class="k-fold-box train p-4 text-center rounded-lg"><strong>Fold 2</strong><br>(Train)</div>
+                                <div class="k-fold-box train p-4 text-center rounded-lg"><strong>Fold 3</strong><br>(Train)</div>
+                                <div class="k-fold-box train p-4 text-center rounded-lg"><strong>Fold 4</strong><br>(Train)</div>
+                                <div class="k-fold-box train p-4 text-center rounded-lg"><strong>Fold 5</strong><br>(Train)</div>
+                            </div>
+                        </div>
+                         <div class="flex justify-center mt-4">
+                            <button onclick="runKFoldAnimation()" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors">
+                                Animate K-Fold Process
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: 1D CNN Architecture -->
+            <div id="step-3" class="step-content">
+                <div class="info-card">
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <div class="flex-grow">
+                            <h2 class="text-2xl font-bold mb-2 text-indigo-600">Step 3: The Optimized 1D CNN Architecture</h2>
+                            <p class="mb-4 text-gray-700">After the extensive search, this is the final, winning architecture. It is built using the optimal hyperparameters discovered by Optuna. Click any layer to see its role in the final model.</p>
+                            <div id="cnn-diagram-container" class="bg-gray-50 p-4 rounded-lg overflow-x-auto">
+                                <svg id="cnn-diagram" width="1000" height="400">
+                                    <defs>
+                                        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                                            <polygon points="0 0, 10 3.5, 0 7" fill="#9ca3af" />
+                                        </marker>
+                                    </defs>
+                                    <!-- Connectors -->
+                                    <line class="connector" x1="120" y1="200" x2="220" y2="200"></line>
+                                    <line class="connector" x1="330" y1="200" x2="430" y2="200"></line>
+                                    <line class="connector" x1="540" y1="200" x2="640" y2="200"></line>
+                                    <line class="connector" x1="750" y1="200" x2="850" y2="200"></line>
+                                    
+                                    <!-- Layers -->
+                                    <g id="layer-input" class="cnn-layer" onclick="showLayerInfo('input')">
+                                        <rect x="20" y="150" width="100" height="100" rx="10" fill="#f3f4f6" stroke="#d1d5db" stroke-width="2"/>
+                                        <text x="70" y="195" text-anchor="middle" font-weight="bold">Input</text>
+                                        <text x="70" y="215" text-anchor="middle" font-size="12" fill="#4b5563">88 Features</text>
+                                    </g>
+                                    <g id="layer-conv1d" class="cnn-layer" onclick="showLayerInfo('conv1d')">
+                                        <rect x="230" y="100" width="100" height="200" rx="10" fill="#e0e7ff" stroke="#a5b4fc" stroke-width="2"/>
+                                        <text x="280" y="195" text-anchor="middle" font-weight="bold">Conv1D</text>
+                                        <text x="280" y="215" text-anchor="middle" font-size="12" fill="#4338ca">64 Filters</text>
+                                        <text x="280" y="230" text-anchor="middle" font-size="12" fill="#4338ca">Kernel: 7</text>
+                                    </g>
+                                    <g id="layer-pool" class="cnn-layer" onclick="showLayerInfo('pool')">
+                                        <rect x="440" y="150" width="100" height="100" rx="10" fill="#dcfce7" stroke="#86efac" stroke-width="2"/>
+                                        <text x="490" y="195" text-anchor="middle" font-weight="bold">Global</text>
+                                        <text x="490" y="215" text-anchor="middle" font-weight="bold">Max Pool</text>
+                                    </g>
+                                    <g id="layer-fc" class="cnn-layer" onclick="showLayerInfo('fc')">
+                                        <rect x="650" y="125" width="100" height="150" rx="10" fill="#fee2e2" stroke="#fca5a5" stroke-width="2"/>
+                                        <text x="700" y="195" text-anchor="middle" font-weight="bold">Fully</text>
+                                        <text x="700" y="215" text-anchor="middle" font-weight="bold">Connected</text>
+                                        <text x="700" y="235" text-anchor="middle" font-size="12" fill="#b91c1c">Dropout: 0.20</text>
+                                    </g>
+                                    <g id="layer-output" class="cnn-layer" onclick="showLayerInfo('output')">
+                                        <rect x="860" y="162.5" width="100" height="75" rx="10" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="2"/>
+                                        <text x="910" y="195" text-anchor="middle" font-weight="bold">Output</text>
+                                        <text x="910" y="215" text-anchor="middle" font-size="12" fill="#7c3aed">2 Classes</text>
+                                    </g>
+                                </svg>
+                            </div>
+                        </div>
+                        <div id="layer-info-panel" class="w-full lg:w-1/3 xl:w-1/4 flex-shrink-0">
+                            <div class="info-card h-full bg-indigo-50 border border-indigo-200">
+                                <h3 id="info-title" class="text-xl font-bold text-indigo-700 mb-3">Layer Information</h3>
+                                <p id="info-text" class="text-indigo-900">Click on a layer in the diagram to see its details here.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Final Model Training & Evaluation -->
+            <div id="step-4" class="step-content">
+                <div class="info-card">
+                    <h2 class="text-2xl font-bold mb-4 text-indigo-600">Step 4: Final Training & Evaluation</h2>
+                    <p class="mb-6 text-gray-700">With the optimal architecture and hyperparameters locked in, we perform one final training run. The model is trained on the <strong>entire training dataset</strong>. This final, optimized model is then evaluated against the unseen hold-out test set to measure its true performance.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h3 class="font-semibold text-lg mb-4 text-green-800">Final Model Parameters</h3>
+                            <div class="text-left space-y-2 text-sm">
+                                <p><strong class="text-gray-700 w-24 inline-block">Learning Rate:</strong> <span class="font-mono text-green-700">0.0025</span></p>
+                                <p><strong class="text-gray-700 w-24 inline-block">Optimizer:</strong> <span class="font-mono text-green-700">Adam</span></p>
+                                <p><strong class="text-gray-700 w-24 inline-block">Num Filters:</strong> <span class="font-mono text-green-700">64</span></p>
+                                <p><strong class="text-gray-700 w-24 inline-block">Kernel Size:</strong> <span class="font-mono text-green-700">7</span></p>
+                                <p><strong class="text-gray-700 w-24 inline-block">Dropout Rate:</strong> <span class="font-mono text-green-700">0.20</span></p>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                             <h3 class="font-semibold text-lg mb-2">Final Result</h3>
+                             <p class="text-gray-700">Performance on the hold-out test data.</p>
+                             <p class="text-5xl font-bold text-indigo-600 mt-4">84.26%</p>
+                             <p class="text-sm text-gray-500 mt-1">Accuracy on Unseen Test Data</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        let currentStep = 1;
+
+        const layerInfo = {
+            input: {
+                title: "Input Layer",
+                text: "The starting point. A vector of 88 features, carefully selected by the Genetic Algorithm, is fed into the model for each patient. These features have been scaled to a common range (0-1)."
+            },
+            conv1d: {
+                title: "1D Convolutional Layer",
+                text: "The core pattern-detection layer. After testing many combinations, Optuna selected 64 filters, each with a size of 7, as the optimal choice. These filters slide across the input features to recognize important local patterns."
+            },
+            pool: {
+                title: "Global Max Pooling Layer",
+                text: "This layer dramatically simplifies the information from the convolutional layer. For each of the 64 feature maps generated by the filters, it takes only the single most important value (the maximum). This captures the most significant detected patterns while making the model more efficient."
+            },
+            fc: {
+                title: "Fully Connected (Dense) Layer",
+                text: "A classic neural network layer that performs classification. It takes the 64 important features from the pooling layer and maps them to 50 intermediate neurons. A Dropout rate of 0.20 was found to be optimal for preventing overfitting."
+            },
+            output: {
+                title: "Output Layer",
+                text: "The final layer. It takes the information from the fully connected layer and condenses it into 2 output nodes. These nodes provide the probability for each class: 'No Readmission' (Class 0) and 'Readmission' (Class 1)."
+            }
+        };
+
+        function showStep(step) {
+            document.getElementById(`step-${currentStep}`).classList.remove('active');
+            document.getElementById(`btn-step-${currentStep}`).classList.remove('active');
+            
+            document.getElementById(`step-${step}`).classList.add('active');
+            document.getElementById(`btn-step-${step}`).classList.add('active');
+            
+            currentStep = step;
+        }
+
+        function showLayerInfo(layerId) {
+            const info = layerInfo[layerId];
+            document.getElementById('info-title').textContent = info.title;
+            document.getElementById('info-text').textContent = info.text;
+
+            document.querySelectorAll('.cnn-layer').forEach(el => el.classList.remove('highlight'));
+            document.getElementById(`layer-${layerId}`).classList.add('highlight');
+        }
+
+        let kFoldAnimationInterval;
+        function runKFoldAnimation() {
+            if (kFoldAnimationInterval) clearInterval(kFoldAnimationInterval);
+            
+            let currentFold = 0;
+            const container = document.getElementById('kfold-container');
+            const iterationText = document.getElementById('kfold-iteration');
+            const folds = container.children;
+
+            kFoldAnimationInterval = setInterval(() => {
+                if (!container || !iterationText || !folds) return;
+                // Reset all folds
+                for (let i = 0; i < folds.length; i++) {
+                    folds[i].classList.remove('validate');
+                    folds[i].classList.add('train');
+                    folds[i].innerHTML = `<strong>Fold ${i+1}</strong><br>(Train)`;
+                }
+
+                // Set the current validation fold
+                const validationFold = folds[currentFold];
+                validationFold.classList.remove('train');
+                validationFold.classList.add('validate');
+                validationFold.innerHTML = `<strong>Fold ${currentFold + 1}</strong><br>(Validate)`;
+
+                iterationText.textContent = `Iteration ${currentFold + 1} of 5`;
+
+                currentFold = (currentFold + 1) % 5;
+
+            }, 1500);
+        }
+
+        // Initialize
+        document.addEventListener("DOMContentLoaded", function() {
+            showStep(1);
+            showLayerInfo('input'); // Show input info by default
+            runKFoldAnimation();
+        });
+    </script>
+
+</body>
+</html>
